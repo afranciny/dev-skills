@@ -10,8 +10,67 @@ Referência técnica para instalar e operar o stack de skills: `mattpocock/skill
 
 ---
 
+## Por que este stack
+
+O gargalo de codar com um agente não é mais a velocidade de gerar código — é o loop de
+review-e-retrabalho quando o output diverge da intenção. Um estudo de 20.574 sessões reais
+mostra que a falha dominante é *misalignment*: o agente produz código plausível e confiante
+que resolve o problema errado ([arXiv 2605.29442](https://arxiv.org/pdf/2605.29442)). Este
+stack existe para atacar isso: transforma trabalho ad-hoc ("vibe coding") em um fluxo com
+enquadramento, spec, design explícito, TDD e verificação — cada etapa com um artefato que a
+próxima consome.
+
+### O que é usado
+
+Quatro camadas, cada uma com um papel:
+
+- **spec-kit** ([github/spec-kit](https://github.com/github/spec-kit)) — coloca a
+  **especificação versionada como fonte de verdade**, não o código. Fluxo Spec → Plan →
+  Tasks → Implement, cada fase gerando um artefato Markdown que alimenta a próxima
+  ([IBM: o que é SDD](https://www.ibm.com/think/topics/spec-driven-development)).
+- **superpowers** ([obra/superpowers](https://github.com/obra/superpowers)) — impõe a
+  **disciplina clarify → design → plan → code → verify**: planejar antes de tocar em
+  arquivo, escrever o teste antes da implementação, e revisar em duas etapas antes de dar
+  por concluído.
+- **mattpocock/skills** + **dev-skills** — o **vocabulário e os procedimentos** de
+  engenharia (DDD, arquitetura, review, refactor, migração) empacotados como *agent skills*.
+  Skills usam **progressive disclosure**: só os metadados ficam no contexto; o corpo carrega
+  quando é relevante — o que torna o número de skills praticamente ilimitado sem inchar o
+  context window ([Anthropic: Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)).
+
+### Problemas que resolve
+
+| Problema | Sem o stack | Com o stack |
+|----------|-------------|-------------|
+| **Intent drift** | "adiciona login" é subespecificado; o agente chuta defaults que raramente batem com o que o time queria | a spec captura a intenção antes de gerar código ([SDD e drift](https://arxiv.org/html/2602.00180v1)) |
+| **Context explosion** | o agente raciocina sobre o repo inteiro e a qualidade cai conforme o contexto enche | tarefas fatiadas + progressive disclosure mantêm o foco no que importa |
+| **Spec-code drift silencioso** | o código evolui, a doc não; a divergência só aparece quando é cara de consertar | a spec é o contrato versionado, revisto a cada fase ([arXiv 2606.27045](https://arxiv.org/abs/2606.27045)) |
+| **Testes que passam por construção** | sem testes, o agente assume que está tudo ok enquanto quebrou coisas | TDD obriga o teste a falhar antes da implementação existir |
+| **Ambiguidade de domínio** | sinônimos e traduções erradas entre negócio e código | ubiquitous language alinha termo de negócio ↔ código, reduzindo abstrações enganosas ([DDD SLR, arXiv 2310.01905](https://arxiv.org/pdf/2310.01905)) |
+| **Erosão arquitetural** | features novas ignoram as convenções existentes e a base degrada | design explícito (DDD/clean architecture) antes de implementar |
+
+### Melhorias esperadas
+
+Pragmaticamente, o ganho não é "menos código" — é **menos retrabalho**:
+
+- **Menos ciclos de review-e-rework**, porque a intenção é fixada antes da geração e
+  verificada em checkpoints, pegando drift cedo, antes de compor ([zeroshot: SDD com agentes](https://zeroshot.ghost.io/spec-driven-development-with-ai-coding-agents/)).
+- **Output mais consistente com a arquitetura** e menos regressões silenciosas, porque
+  existe um teste e um contrato para gatear cada mudança.
+- **Contexto mais barato e mais focado** — progressive disclosure reduz tokens/custo e
+  mantém a atenção do modelo só no passo atual, o que também reduz alucinação.
+- **Menos ambiguidade** entre o que foi pedido e o que foi construído, via spec + linguagem
+  ubíqua.
+
+Trade-off honesto: o fluxo adiciona **overhead de cerimônia** (escrever spec, plano, testes).
+Compensa em trabalho não-trivial e multi-sessão; para um one-liner, é exagero — use `/ask-matt`
+para decidir a profundidade certa.
+
+---
+
 ## Índice
 
+- [Por que este stack](#por-que-este-stack) — o que é usado, problemas que resolve, ganhos
 - [Componentes](#componentes) — os 4 módulos do stack
 - [Pré-requisitos](#pré-requisitos)
 - [Operações de instalação](#operações-de-instalação)
