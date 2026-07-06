@@ -349,7 +349,7 @@ Imprime, a cada sessão, um lembrete de usar as skills com o link do guia. Adici
 **Comando completo** (o que gravar em `command`):
 
 ```bash
-echo '{"systemMessage":"Você tem 55 skills + superpowers + spec-kit. Guia: https://claude.ai/code/artifact/793aa989-fe42-48af-9a24-396df46c988d — acione /ask-matt se estiver em dúvida.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"O usuário mantém um set curado de skills de engenharia. Prefira acionar a skill adequada à fase do trabalho."}}'
+echo '{"systemMessage":"Você tem 55 skills + superpowers + spec-kit. Guia: https://afranciny.github.io/dev-skills/#guia-de-uso — acione /ask-matt se estiver em dúvida.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"O usuário mantém um set curado de skills de engenharia. Prefira acionar a skill adequada à fase do trabalho."}}'
 ```
 
 **Validação** — `jq empty ~/.claude/settings.json` (sem saída = ok). Efetivo na próxima
