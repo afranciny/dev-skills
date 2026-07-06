@@ -73,6 +73,7 @@ para decidir a profundidade certa.
 - [Por que este stack](#por-que-este-stack) — o que é usado, problemas que resolve, ganhos
 - [Componentes](#componentes) — os 4 módulos do stack
 - [Guia de uso](#guia-de-uso) — qual skill em cada fase do trabalho
+- [Setup via prompt](#setup-via-prompt-copiar-e-colar) — cole numa sessão em andamento
 - [Pré-requisitos](#pré-requisitos)
 - [Operações de instalação](#operações-de-instalação)
   - [`install mattpocock`](#install-mattpocock)
@@ -236,7 +237,42 @@ Para textos, artigos e notas — separado do fluxo de engenharia.
 
 ---
 
+## Setup via prompt (copiar e colar)
+
+A forma mais rápida: cole o prompt abaixo **numa sessão do Claude Code já em andamento**.
+Ele instala tudo seguindo este README.
+
+```text
+Instale e configure na minha máquina o stack de skills de engenharia do repo
+https://github.com/afranciny/dev-skills, seguindo o README dele. Faça:
+
+1. Instale as skills do mattpocock/skills e do afranciny/dev-skills globalmente para o
+   Claude Code (npx skills add ... --global --agent claude-code --skill '*' -y).
+2. Instale o plugin superpowers (marketplace obra/superpowers-marketplace) e o CLI do
+   spec-kit (specify, via uv tool install).
+3. Rode o health check do README e me mostre o resultado.
+4. Me diga exatamente o que exige reabrir a sessão para passar a valer.
+
+Não altere nada fora disso.
+```
+
+> **Importante:** skills e plugin só entram em vigor numa **sessão nova**. Depois que o
+> Claude terminar de instalar, feche e rode `claude` de novo na mesma pasta do projeto —
+> `/clear` não recarrega o catálogo de skills.
+
+Já com a sessão reaberta, configure o projeto (setup guiado — tracker, labels, docs):
+
+```text
+/setup-matt-pocock-skills
+```
+
+E, para o fluxo spec-driven num repo existente: `specify init --here`.
+
+---
+
 ## Operações de instalação
+
+Passo a passo manual (o que o prompt acima automatiza).
 
 ### `install mattpocock`
 
