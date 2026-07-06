@@ -84,6 +84,7 @@ para decidir a profundidade certa.
 - [Resources: catálogo de skills](#resources-catálogo-de-skills)
 - [Manutenção](#manutenção)
 - [Troubleshooting](#troubleshooting)
+- [Referências](#referências) — papers, relatórios e casos verificados
 
 ---
 
@@ -323,6 +324,74 @@ mattpocock sem duplicar (por isso não trazem `tdd`, `code-review`, `research`,
 | `specify: command not found` | `~/.local/bin` fora do `PATH` | Adicionar ao `PATH` no shell rc |
 | `settings.json` ignorado | JSON malformado | `jq empty ~/.claude/settings.json` e corrigir |
 | Skill duplicada | Mesmo nome em duas fontes | Remover uma; este repo já é deduplicado vs mattpocock |
+
+---
+
+## Referências
+
+Todas as fontes abaixo foram **verificadas** (título, autores e data conferidos na origem).
+Nenhuma afirmação da seção [Por que este stack](#por-que-este-stack) é inventada — cada
+ponto rastreia até um destes itens.
+
+### Papers acadêmicos (peer-reviewed / arXiv)
+
+- Tang, N. et al. (2026). **How Coding Agents Fail Their Users: A Large-Scale Analysis of
+  Developer-Agent Misalignment in 20,574 Real-World Sessions.** arXiv:2605.29442 —
+  https://arxiv.org/abs/2605.29442
+  *(evidência do modo de falha dominante: misalignment; >91% das resoluções exigem correção humana.)*
+- Grabowski, H. (2026). **The Spec Growth Engine: Spec-Anchored, Code-Coupled, Drift-Enforced
+  Architecture for AI-Assisted Software Development.** arXiv:2606.27045 —
+  https://arxiv.org/abs/2606.27045
+  *(context explosion e spec-code drift; detecção automática de divergência.)*
+- Piskala, D. B. (2026). **Spec-Driven Development: From Code to Contract in the Age of AI
+  Coding Assistants.** arXiv:2602.00180 — https://arxiv.org/abs/2602.00180
+  *(spec como artefato primário; guia para praticantes.)*
+- Taghavi, P.; Bhavani, S. (2026). **Spec Kit Agents: Context-Grounded Agentic Workflows.**
+  arXiv:2604.05278 — https://arxiv.org/abs/2604.05278
+  *(grounding por contexto de repositório melhora qualidade mantendo compatibilidade de testes.)*
+- Özkan, O.; Babur, Ö.; van den Brand, M. (2023–2025). **Domain-Driven Design in Software
+  Development: A Systematic Literature Review on Implementation, Challenges, and
+  Effectiveness.** arXiv:2310.01905 (também em *Journal of Systems and Software*, 2025) —
+  https://arxiv.org/abs/2310.01905
+  *(revisão sistemática de 36 estudos; DDD melhora decomposição e coesão.)*
+- **Domain-Driven Design for Microservices: An Evidence-Based Investigation.** *IEEE
+  Transactions on Software Engineering* (2024) —
+  https://dl.acm.org/doi/abs/10.1109/TSE.2024.3385835
+  *(métodos DDD produzem serviços com maior coesão vs. dataflow-driven.)*
+
+### Estudos de indústria e relatórios
+
+- Anthropic Engineering. **Equipping agents for the real world with Agent Skills.** —
+  https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills
+  *(fundamento do progressive disclosure: contexto sob demanda, skills ~ilimitadas.)*
+- Forsgren, N.; Humble, J.; Kim, G. **Accelerate / DORA — State of DevOps.** —
+  https://dora.dev/capabilities/
+  *(evidência empírica: automação de testes e CD elevam qualidade e throughput.)*
+- GitHub. **spec-kit — Toolkit for Spec-Driven Development.** —
+  https://github.com/github/spec-kit · guia: https://github.github.com/spec-kit/
+- IBM. **What is Spec-Driven Development?** —
+  https://www.ibm.com/think/topics/spec-driven-development
+
+### Casos de negócio para estudo
+
+- **GitHub Spec Kit** na prática (blog oficial GitHub): *Spec-driven development with AI —
+  get started with a new open source toolkit.* —
+  https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/
+- **Microsoft for Developers**: *Diving Into Spec-Driven Development With GitHub Spec Kit.* —
+  https://developer.microsoft.com/blog/spec-driven-development-spec-kit
+- **DDD Sample (Cargo Tracking System)** — a aplicação de referência do livro de Evans, usada
+  em vários estudos comparativos de decomposição. Ver a SLR (Özkan et al.) para os 36 casos
+  revisados.
+
+### Livros fundadores (base intelectual das skills deste repo)
+
+- Evans, E. (2003). *Domain-Driven Design.* — base de `domain-driven-design`.
+- Fowler, M. (2018). *Refactoring, 2ª ed.* — base de `refactoring-patterns`.
+- Feathers, M. (2004). *Working Effectively with Legacy Code.* — base de `working-with-legacy-code`.
+- Martin, R. C. (2017). *Clean Architecture.* / (2008) *Clean Code.* — base de `clean-architecture`, `clean-code`.
+- Nygard, M. (2018). *Release It!, 2ª ed.* — base de `release-it`.
+- Kleppmann, M. (2017). *Designing Data-Intensive Applications.* — base de `system-design`.
+- Beck, K. (2002). *Test-Driven Development by Example.* — base do fluxo TDD.
 
 ---
 
