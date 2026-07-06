@@ -1,70 +1,90 @@
 # dev-skills
 
-Set único e curado de **agent skills de engenharia** para o Claude Code, mais o guia
-de instalação do stack completo de produtividade em código: as skills do
-`mattpocock/skills`, este set (`dev-skills`), o plugin `superpowers` e o CLI
-`spec-kit`.
+> Set curado de agent skills de engenharia para o Claude Code + referência de setup do stack completo.
 
-Este README ensina a **reproduzir o ambiente do zero** em qualquer máquina.
+`skills: 17` · `stack: 4 componentes` · `scope: global` · `license: MIT`
 
-- [O que é o stack](#o-que-é-o-stack)
-- [Pré-requisitos](#pré-requisitos)
-- [Instalação passo a passo](#instalação-passo-a-passo)
-- [Configurar a mensagem inicial (hook)](#configurar-a-mensagem-inicial-hook)
-- [Setup por projeto](#setup-por-projeto)
-- [Verificação](#verificação)
-- [Skills incluídas neste repo](#skills-incluídas-neste-repo)
-- [Atualizar e remover](#atualizar-e-remover)
+Referência técnica para instalar e operar o stack de skills: `mattpocock/skills` (base),
+`dev-skills` (este repo), `superpowers` (plugin) e `spec-kit` (CLI). Formato de referência
+— cada operação traz assinatura, parâmetros, retorno e exemplo.
 
 ---
 
-## O que é o stack
+## Índice
 
-| Camada | O que é | Como instala | Formato |
-|--------|---------|--------------|---------|
-| **mattpocock/skills** | 38 skills de processo (spec, review, TDD, triagem, domínio, escrita) | `npx skills` | skills globais |
-| **dev-skills** (este repo) | 17 skills net-new (DDD, arquitetura, backend, entrega) | `npx skills` ou symlink | skills globais |
-| **superpowers** | Disciplina brainstorm → plan → TDD → review | plugin marketplace | plugin |
-| **spec-kit** | Fluxo Spec → Plan → Tasks → Implement por projeto | `uv tool install` | CLI (`specify`) |
+- [Componentes](#componentes) — os 4 módulos do stack
+- [Pré-requisitos](#pré-requisitos)
+- [Operações de instalação](#operações-de-instalação)
+  - [`install mattpocock`](#install-mattpocock)
+  - [`install dev-skills`](#install-dev-skills)
+  - [`install superpowers`](#install-superpowers)
+  - [`install spec-kit`](#install-spec-kit)
+- [Configuração: hook SessionStart](#configuração-hook-sessionstart)
+- [Operações por projeto](#operações-por-projeto)
+- [Health checks](#health-checks)
+- [Resources: catálogo de skills](#resources-catálogo-de-skills)
+- [Manutenção](#manutenção)
+- [Troubleshooting](#troubleshooting)
 
-As duas primeiras camadas são **skills** (invocáveis com `/nome`, muitas disparam
-sozinhas). O superpowers é um **plugin** (carrega a cada sessão). O spec-kit é um
-**CLI** que você roda por projeto.
+---
 
-Guia visual de qual skill usar em cada fase:
-**https://claude.ai/code/artifact/793aa989-fe42-48af-9a24-396df46c988d**
+## Componentes
+
+| Componente | Tipo | Artefato instalado | Invocação | Fonte |
+|------------|------|--------------------|-----------|-------|
+| `mattpocock/skills` | skills (38) | `~/.claude/skills/*` | `/nome` · auto | `npx skills` |
+| `dev-skills` | skills (17) | `~/.claude/skills/*` | `/nome` · auto | `npx skills` |
+| `superpowers` | plugin | `~/.claude/plugins/*` | auto por sessão | plugin marketplace |
+| `spec-kit` | CLI | `~/.local/bin/specify` | `specify <cmd>` | `uv tool` |
+
+**Guia de uso** (qual skill em cada fase): `https://claude.ai/code/artifact/793aa989-fe42-48af-9a24-396df46c988d`
 
 ---
 
 ## Pré-requisitos
 
-- **Claude Code** instalado (`claude --version`).
-- **Node.js 18+** (para o `npx skills`). `node -v`.
-- **git** e, para o spec-kit, o **uv** (instalado no passo 4).
-- Opcional: **`gh` CLI** autenticado, se for usar tracker no GitHub Issues.
+| Dependência | Versão | Checagem | Necessária para |
+|-------------|--------|----------|-----------------|
+| Claude Code | — | `claude --version` | tudo |
+| Node.js | `>=18` | `node -v` | `npx skills` |
+| git | — | `git --version` | clone / dev-skills |
+| uv | — | `uv --version` | spec-kit (passo 4) |
+| gh CLI | — | `gh auth status` | tracker GitHub (opcional) |
 
 ---
 
-## Instalação passo a passo
+## Operações de instalação
 
-### 1. Skills do mattpocock (base, 38 skills)
+### `install mattpocock`
 
-Instala globalmente para o Claude Code, de forma não-interativa:
+Base do stack — 38 skills de processo (spec, review, TDD, triagem, domínio, escrita).
 
 ```bash
 npx skills@latest add mattpocock/skills --global --agent claude-code --skill '*' -y
 ```
 
-O instalador detecta o agente `claude-code` sozinho. As skills vão para
-`~/.claude/skills/` (via symlink de `~/.agents/skills/`).
+**Parâmetros**
 
-### 2. dev-skills (este repo, 17 skills net-new)
+| Flag | Tipo | Default | Descrição |
+|------|------|---------|-----------|
+| `--global` | bool | `false` | Instala em `~/.claude/skills` (user-level) |
+| `--agent` | string | auto-detect | Agente alvo; `claude-code` é detectado sozinho |
+| `--skill` | glob | — | `'*'` = todas as skills do repo |
+| `-y` | bool | `false` | Pula prompts interativos |
+
+**Retorno** — symlinks em `~/.claude/skills/` apontando para `~/.agents/skills/`.
+
+---
+
+### `install dev-skills`
+
+Este repo — 17 skills net-new (DDD, arquitetura, backend, entrega) que complementam a base.
 
 ```bash
 npx skills@latest add afranciny/dev-skills --global --agent claude-code --skill '*' -y
 ```
 
-Alternativa sem `npx` (clonar e linkar manualmente):
+**Alternativa** — clone + symlink manual (sem `npx`):
 
 ```bash
 git clone https://github.com/afranciny/dev-skills.git ~/dev-skills
@@ -73,34 +93,50 @@ for d in ~/dev-skills/*/; do
 done
 ```
 
-### 3. superpowers (plugin)
+**Retorno** — 17 diretórios de skill disponíveis em `~/.claude/skills/`.
+
+---
+
+### `install superpowers`
+
+Plugin que impõe disciplina brainstorm → plan → TDD → review.
 
 ```bash
 claude plugin marketplace add obra/superpowers-marketplace
 claude plugin install superpowers@superpowers-marketplace --scope user
 ```
 
-Dentro do Claude Code os mesmos passos são `/plugin marketplace add obra/superpowers-marketplace`
-e `/plugin install superpowers@superpowers-marketplace`.
+**Parâmetros**
 
-### 4. spec-kit (CLI `specify`)
+| Flag | Valores | Default | Descrição |
+|------|---------|---------|-----------|
+| `--scope` | `user` \| `project` \| `local` | `user` | Escopo de instalação do plugin |
 
-Precisa do `uv` (gerenciador Python da Astral):
+**Equivalente in-app** — `/plugin marketplace add …` + `/plugin install …`.
 
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh          # instala uv
-uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
-```
-
-Isso deixa o executável `specify` em `~/.local/bin/` (garanta que está no `PATH`).
+**Retorno** — plugin ativo; carrega em toda nova sessão.
 
 ---
 
-## Configurar a mensagem inicial (hook)
+### `install spec-kit`
 
-Um hook `SessionStart` no `~/.claude/settings.json` imprime, a cada sessão, um
-lembrete de usar as skills com o link do guia. Adicione o bloco `hooks` (mesclando
-com o que já existir no arquivo):
+CLI `specify` — fluxo Spec → Plan → Tasks → Implement por projeto. Requer `uv`.
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+```
+
+**Retorno** — executável `~/.local/bin/specify` (garanta `~/.local/bin` no `PATH`).
+
+---
+
+## Configuração: hook SessionStart
+
+Imprime, a cada sessão, um lembrete de usar as skills com o link do guia. Adicionar em
+`~/.claude/settings.json`, **mesclando** com o objeto existente.
+
+**Schema**
 
 ```jsonc
 {
@@ -110,7 +146,7 @@ com o que já existir no arquivo):
         "hooks": [
           {
             "type": "command",
-            "command": "echo '{\"systemMessage\":\"Você tem 55 skills + superpowers + spec-kit. Guia: https://claude.ai/code/artifact/793aa989-fe42-48af-9a24-396df46c988d — acione /ask-matt se estiver em dúvida.\",\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"O usuário mantém um set curado de skills de engenharia. Prefira acionar a skill adequada à fase do trabalho.\"}}'"
+            "command": "echo '<json>'"
           }
         ]
       }
@@ -119,88 +155,119 @@ com o que já existir no arquivo):
 }
 ```
 
-- `systemMessage` é o texto que **você** vê ao abrir a sessão.
-- `additionalContext` é injetado no **modelo**, para ele lembrar de acionar as skills.
+**Payload emitido pelo comando** (`<json>`)
 
-Valide depois de editar: `jq empty ~/.claude/settings.json` (sem saída = JSON ok).
-O hook passa a valer numa nova sessão — se não aparecer, abra `/hooks` uma vez para
-recarregar a config.
+| Campo | Destino | Descrição |
+|-------|---------|-----------|
+| `systemMessage` | usuário | Texto exibido ao abrir a sessão |
+| `hookSpecificOutput.hookEventName` | runtime | Deve ser `"SessionStart"` |
+| `hookSpecificOutput.additionalContext` | modelo | Contexto injetado para o modelo lembrar de acionar skills |
+
+**Comando completo** (o que gravar em `command`):
+
+```bash
+echo '{"systemMessage":"Você tem 55 skills + superpowers + spec-kit. Guia: https://claude.ai/code/artifact/793aa989-fe42-48af-9a24-396df46c988d — acione /ask-matt se estiver em dúvida.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"O usuário mantém um set curado de skills de engenharia. Prefira acionar a skill adequada à fase do trabalho."}}'
+```
+
+**Validação** — `jq empty ~/.claude/settings.json` (sem saída = ok). Efetivo na próxima
+sessão; se não disparar, abra `/hooks` uma vez para recarregar a config.
 
 ---
 
-## Setup por projeto
+## Operações por projeto
 
-As skills do mattpocock assumem uma config por repositório (issue tracker, labels de
-triagem, layout de docs de domínio). Rode **uma vez dentro do projeto**:
+### `setup-matt-pocock-skills`
+
+Config por repositório exigida pelas skills do mattpocock. Rodar **uma vez** dentro do projeto.
 
 ```
 /setup-matt-pocock-skills
 ```
 
-Ele pergunta o issue tracker (GitHub, GitLab, Linear ou arquivos locais), as labels de
-triagem e onde salvar docs, e grava `docs/agents/*.md` + um bloco `## Agent skills`
-no `CLAUDE.md`.
+**Prompts** — issue tracker (`github` \| `gitlab` \| `linear` \| `local`), labels de
+triagem, local dos docs. **Retorno** — `docs/agents/*.md` + bloco `## Agent skills` no `CLAUDE.md`.
 
-Para começar uma feature nova com spec-driven development:
+### `specify init`
+
+Inicia o fluxo spec-driven num projeto.
 
 ```bash
 specify init <projeto> --integration claude
-# ou, para instalar como skills em vez de slash commands:
-specify init <projeto> --integration claude --integration-options="--skills"
+specify init <projeto> --integration claude --integration-options="--skills"   # como skills
 ```
 
 ---
 
-## Verificação
+## Health checks
 
-```bash
-ls ~/.claude/skills | wc -l                 # deve listar 55 (38 + 17)
-claude plugin list | grep superpowers       # plugin ativo
-specify version                             # CLI do spec-kit
-jq empty ~/.claude/settings.json && echo ok # settings íntegro
-```
+| Comando | Esperado |
+|---------|----------|
+| `ls ~/.claude/skills \| wc -l` | `55` (38 + 17) |
+| `claude plugin list \| grep superpowers` | `superpowers@superpowers-marketplace` |
+| `specify version` | versão do spec-kit |
+| `jq empty ~/.claude/settings.json && echo ok` | `ok` |
 
-Numa nova sessão do Claude Code, as skills aparecem via `/` (ex.: `/domain-driven-design`,
-`/code-review`, `/cqrs-implementation`) e a mensagem inicial do hook é exibida.
-
----
-
-## Skills incluídas neste repo
-
-**Design estratégico & DDD** — `domain-driven-design`, `clean-architecture`, `system-design`
-**Craftsmanship** — `refactoring-patterns`, `working-with-legacy-code`, `clean-code`
-**Padrões de backend** — `api-design-principles`, `cqrs-implementation`, `event-store-design`, `microservices-patterns`, `saga-orchestration`, `postgresql-table-design`
-**Entrega & manutenção** — `ci-cd-pipelines`, `security-hardening`, `release-it`, `tech-debt-tracker`, `migration-architect`
-
-Fontes e licenças de cada skill: ver [ATTRIBUTION.md](./ATTRIBUTION.md). Elas
-**complementam** as 38 do mattpocock, sem duplicar (por isso não incluem tdd,
-code-review, research, domain-modeling, etc., que já vêm de lá).
+Em nova sessão: skills disponíveis via `/` (ex.: `/domain-driven-design`, `/cqrs-implementation`)
+e a mensagem do hook exibida.
 
 ---
 
-## Atualizar e remover
+## Resources: catálogo de skills
 
-**Atualizar as skills** (mattpocock e dev-skills):
+Skills deste repo (17). Nomes = comando de invocação (`/nome`).
 
-```bash
-npx skills@latest update --global -y
-```
+| Skill | Grupo | Trigger |
+|-------|-------|---------|
+| `domain-driven-design` | design | Bounded contexts, aggregates, ubiquitous language, context mapping |
+| `clean-architecture` | design | Dependency Rule, ports/adapters, onion, SOLID |
+| `system-design` | design | Sistemas escaláveis: LB, cache, filas, particionamento |
+| `refactoring-patterns` | craft | Transformações seguras dirigidas por smells (Fowler) |
+| `working-with-legacy-code` | craft | Seams, characterization tests, quebra de dependências (Feathers) |
+| `clean-code` | craft | Naming, funções pequenas, SRP, disciplina de comentários |
+| `api-design-principles` | backend | Design/review REST & GraphQL |
+| `cqrs-implementation` | backend | Separação read/write, event-sourced |
+| `event-store-design` | backend | Event stores para sistemas event-sourced |
+| `microservices-patterns` | backend | Fronteiras de serviço, event-driven, resiliência |
+| `saga-orchestration` | backend | Transações distribuídas / compensação |
+| `postgresql-table-design` | backend | Schema PostgreSQL: tipos, índices, constraints, performance |
+| `ci-cd-pipelines` | entrega | Design/automação de pipelines |
+| `security-hardening` | entrega | Hardening de app/infra |
+| `release-it` | entrega | Circuit breakers, bulkheads, timeouts, chaos, observabilidade |
+| `tech-debt-tracker` | entrega | Identificar, priorizar e rastrear dívida técnica |
+| `migration-architect` | entrega | Migração de risco com rollback explícito (zero-downtime) |
 
-**Atualizar o superpowers**: `claude plugin marketplace update superpowers-marketplace`
-**Atualizar o spec-kit**: `uv tool upgrade specify-cli`
+Fontes e licenças por skill: [ATTRIBUTION.md](./ATTRIBUTION.md). Complementam a base do
+mattpocock sem duplicar (por isso não trazem `tdd`, `code-review`, `research`,
+`domain-modeling`, etc., que já vêm de lá).
 
-**Remover**:
+---
 
-```bash
-npx skills@latest remove --global --skill '*' -y      # skills
-claude plugin uninstall superpowers@superpowers-marketplace
-uv tool uninstall specify-cli
-```
+## Manutenção
+
+| Operação | Comando |
+|----------|---------|
+| Atualizar skills | `npx skills@latest update --global -y` |
+| Atualizar superpowers | `claude plugin marketplace update superpowers-marketplace` |
+| Atualizar spec-kit | `uv tool upgrade specify-cli` |
+| Remover skills | `npx skills@latest remove --global --skill '*' -y` |
+| Remover superpowers | `claude plugin uninstall superpowers@superpowers-marketplace` |
+| Remover spec-kit | `uv tool uninstall specify-cli` |
+
+---
+
+## Troubleshooting
+
+| Sintoma | Causa provável | Ação |
+|---------|----------------|------|
+| Skills não aparecem via `/` | Sessão anterior ao install | Abrir nova sessão |
+| Hook não dispara | Watcher não recarregou a config | Abrir `/hooks` uma vez, ou reiniciar |
+| `specify: command not found` | `~/.local/bin` fora do `PATH` | Adicionar ao `PATH` no shell rc |
+| `settings.json` ignorado | JSON malformado | `jq empty ~/.claude/settings.json` e corrigir |
+| Skill duplicada | Mesmo nome em duas fontes | Remover uma; este repo já é deduplicado vs mattpocock |
 
 ---
 
 ## Licença
 
-A curadoria/organização deste repo é MIT ([LICENSE](./LICENSE)). Cada skill vendorizada
-mantém a licença do projeto de origem — ver [ATTRIBUTION.md](./ATTRIBUTION.md) e
-[`licenses/`](./licenses/).
+Curadoria/organização: MIT ([LICENSE](./LICENSE)). Cada skill vendorizada mantém a licença
+de origem — ver [ATTRIBUTION.md](./ATTRIBUTION.md) e [`licenses/`](./licenses/).
