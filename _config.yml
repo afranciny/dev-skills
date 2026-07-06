@@ -1,3 +1,24 @@
 title: dev-skills
 description: Set curado de agent skills de engenharia para o Claude Code + referência de setup do stack completo.
 theme: jekyll-theme-cayman
+# O site publica apenas o README (index). Os diretórios de skill contêm
+# SKILL.md com templates ({{ }}) que quebram o Liquid do Jekyll — excluídos do build.
+exclude:
+  - api-design-principles
+  - ci-cd-pipelines
+  - clean-architecture
+  - clean-code
+  - cqrs-implementation
+  - domain-driven-design
+  - event-store-design
+  - licenses
+  - microservices-patterns
+  - migration-architect
+  - postgresql-table-design
+  - refactoring-patterns
+  - release-it
+  - saga-orchestration
+  - security-hardening
+  - system-design
+  - tech-debt-tracker
+  - working-with-legacy-code
