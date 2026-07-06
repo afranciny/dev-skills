@@ -72,6 +72,7 @@ para decidir a profundidade certa.
 
 - [Por que este stack](#por-que-este-stack) — o que é usado, problemas que resolve, ganhos
 - [Componentes](#componentes) — os 4 módulos do stack
+- [Guia de uso](#guia-de-uso) — qual skill em cada fase do trabalho
 - [Pré-requisitos](#pré-requisitos)
 - [Operações de instalação](#operações-de-instalação)
   - [`install mattpocock`](#install-mattpocock)
@@ -97,7 +98,129 @@ para decidir a profundidade certa.
 | `superpowers` | plugin | `~/.claude/plugins/*` | auto por sessão | plugin marketplace |
 | `spec-kit` | CLI | `~/.local/bin/specify` | `specify <cmd>` | `uv tool` |
 
-**Guia de uso** (qual skill em cada fase): `https://claude.ai/code/artifact/793aa989-fe42-48af-9a24-396df46c988d`
+**Guia de uso** (qual skill em cada fase): ver [Guia de uso](#guia-de-uso) abaixo.
+
+---
+
+## Guia de uso
+
+Qual skill acionar em cada fase do trabalho. Invoque com `/nome`; muitas disparam sozinhas
+pelo contexto. Origem: `matt` = mattpocock · `dev` = dev-skills · `sup` = superpowers ·
+`spec` = spec-kit.
+
+### 1. Descoberta & enquadramento
+
+Antes de escrever qualquer coisa: entenda o problema e pressione o plano.
+
+| Skill | Origem | Quando usar |
+|-------|--------|-------------|
+| `/ask-matt` | matt | Não sabe qual skill/fluxo usar — roteador da situação |
+| `brainstorming` | sup | Antes de qualquer trabalho criativo; explora intenção e requisitos (auto) |
+| `/grilling` · `/grill-me` | matt | Testar um plano/design antes de construir |
+| `/grill-with-docs` | matt | Mesma entrevista, gerando ADRs + glossário |
+| `/research` | matt | Investigar contra fontes primárias e capturar em Markdown |
+| `/wayfinder` | matt | Trabalho enorme, multi-sessão, como tickets de investigação |
+
+### 2. Especificação
+
+Transformar a ideia validada em spec, plano e tarefas.
+
+| Skill | Origem | Quando usar |
+|-------|--------|-------------|
+| `specify init` → `/speckit.specify` · `.plan` · `.tasks` | spec | Novo projeto/feature: Spec → Plan → Tasks → Implement |
+| `writing-plans` | sup | Virar uma spec em plano executável antes de tocar código (auto) |
+| `/to-prd` | matt | Consolidar a conversa num PRD e publicar no tracker |
+| `/to-issues` | matt | Quebrar plano/PRD em issues "grabbable" |
+
+### 3. Modelagem de domínio & arquitetura
+
+Onde vive a lógica, quais as fronteiras, qual a linguagem do negócio.
+
+| Skill | Origem | Quando usar |
+|-------|--------|-------------|
+| `/domain-driven-design` | dev | Bounded contexts, aggregates, ubiquitous language, context mapping |
+| `/domain-modeling` · `/ubiquitous-language` | matt | Construir/afinar o modelo de domínio deste repo; glossário |
+| `/clean-architecture` | dev | Decidir camada; Dependency Rule, hexagonal, onion, SOLID |
+| `/codebase-design` | matt | Desenhar deep modules e seams; testabilidade |
+| `/system-design` | dev | Sistema distribuído escalável: LB, cache, filas, particionamento |
+| `/design-an-interface` | matt | Explorar múltiplos formatos de uma interface |
+| `/improve-codebase-architecture` | matt | Auditar a base atual → relatório → grill |
+
+### 4. Padrões de backend
+
+Design de APIs, dados e comunicação entre serviços.
+
+| Skill | Origem | Quando usar |
+|-------|--------|-------------|
+| `/api-design-principles` | dev | Desenhar/revisar API REST ou GraphQL |
+| `/cqrs-implementation` · `/event-store-design` | dev | Separar leitura/escrita; sistemas event-sourced |
+| `/microservices-patterns` · `/saga-orchestration` | dev | Fronteiras de serviço, event-driven, transações distribuídas |
+| `/postgresql-table-design` | dev | Modelar/revisar schema PostgreSQL |
+
+### 5. Implementação
+
+Executar o plano com disciplina — teste primeiro, verifique depois.
+
+| Skill | Origem | Quando usar |
+|-------|--------|-------------|
+| `/implement` | matt | Implementar a partir de um PRD ou conjunto de issues |
+| `test-driven-development` · `/tdd` | sup · matt | Qualquer feature/bugfix: red-green-refactor |
+| `executing-plans` · `subagent-driven-development` | sup | Executar plano com checkpoints; despachar tarefas em subagentes |
+
+### 6. Debug, revisão & qualidade
+
+Quando algo quebra, ou antes de dar por concluído.
+
+| Skill | Origem | Quando usar |
+|-------|--------|-------------|
+| `systematic-debugging` · `/diagnosing-bugs` | sup · matt | Bug difícil, teste falhando, regressão — diagnóstico antes de corrigir |
+| `/code-review` | matt | Revisar mudanças (eixos padrões do repo + fidelidade à spec) |
+| `requesting-code-review` · `receiving-code-review` | sup | Ao concluir/antes do merge; lidar com feedback com rigor |
+| `/refactoring-patterns` · `/clean-code` | dev | Melhorar código existente (smells; SRP, naming) |
+| `/working-with-legacy-code` · `/tech-debt-tracker` | dev | Código sem teste ou dívida acumulada |
+| `verification-before-completion` | sup | Antes de afirmar "pronto/passando": evidência antes da afirmação |
+| `/qa` | matt | Sessão de QA conversacional que arquiva issues |
+
+### 7. Entrega & manutenção
+
+Pipeline, segurança, produção, migrações e higiene de git.
+
+| Skill | Origem | Quando usar |
+|-------|--------|-------------|
+| `/ci-cd-pipelines` · `/security-hardening` | dev | Automatizar entrega; endurecer segurança de app/infra |
+| `/release-it` | dev | Estabilidade em produção: circuit breakers, timeouts, chaos, observabilidade |
+| `/migration-architect` | dev | Migração de risco (DB, cutover) com rollback explícito |
+| `/setup-pre-commit` · `/resolving-merge-conflicts` · `/git-guardrails-claude-code` | matt | Pre-commit; resolver merge/rebase; bloquear git perigoso |
+| `using-git-worktrees` · `finishing-a-development-branch` | sup | Workspace isolado; opções de merge/PR/cleanup ao terminar |
+
+### 8. Colaboração, handoff & meta
+
+Passar bastão, ensinar, triar e criar novas skills.
+
+| Skill | Origem | Quando usar |
+|-------|--------|-------------|
+| `/handoff` · `/claude-handoff` | matt | Compactar conversa num doc de handoff |
+| `/triage` · `/request-refactor-plan` | matt | Máquina de estados de triagem; plano de refactor como issue |
+| `/teach` | matt | Ensinar uma nova skill/conceito no workspace |
+| `writing-skills` · `/writing-great-skills` | sup · matt | Criar/editar skills |
+
+### 9. Escrita (não-código)
+
+Para textos, artigos e notas — separado do fluxo de engenharia.
+
+| Skill | Origem | Quando usar |
+|-------|--------|-------------|
+| `/writing-fragments` → `/writing-shape` → `/writing-beats` | matt | Do material bruto ao artigo |
+| `/edit-article` · `/obsidian-vault` | matt | Reestruturar rascunho; notas no Obsidian |
+
+### Fluxo padrão de uma feature
+
+1. **Enquadre** — `brainstorming` / `/grill-me` para afiar a ideia.
+2. **Especifique** — `specify init` → spec / plan / tasks.
+3. **Desenhe** — `/domain-driven-design` + `/clean-architecture` conforme a fronteira.
+4. **Implemente** — `test-driven-development`, uma tarefa por vez.
+5. **Revise** — `/code-review` + `verification-before-completion` antes do "pronto".
+6. **Entregue** — `finishing-a-development-branch`, e `/migration-architect` se houver risco.
 
 ---
 
