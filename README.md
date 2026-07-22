@@ -2,12 +2,12 @@
 
 > Set curado de agent skills de engenharia para o Claude Code + referência de setup do stack completo.
 
-`skills: 19` · `stack: 6 componentes` · `scope: global` · `license: MIT`
+`skills: 19` · `stack: 5 componentes` · `scope: global` · `license: MIT`
 
 Referência técnica para instalar e operar o stack de skills: `mattpocock/skills` (base),
-`dev-skills` (este repo), `superpowers` (plugin), `spec-kit` (CLI), `claude-mem` (plugin de
-memória) e `skills` (CLI de descoberta, `npx skills`). Formato de referência — cada operação
-traz assinatura, parâmetros, retorno e exemplo.
+`dev-skills` (este repo), `superpowers` (plugin), `spec-kit` (CLI) e `skills` (CLI de
+descoberta, `npx skills`). Formato de referência — cada operação traz assinatura, parâmetros,
+retorno e exemplo.
 
 ---
 
@@ -81,7 +81,6 @@ para decidir a profundidade certa.
   - [`install dev-skills`](#install-dev-skills)
   - [`install superpowers`](#install-superpowers)
   - [`install spec-kit`](#install-spec-kit)
-  - [`install claude-mem`](#install-claude-mem)
   - [`install find-skills`](#install-find-skills)
 - [Configuração: hook SessionStart](#configuração-hook-sessionstart)
 - [Operações por projeto](#operações-por-projeto)
@@ -100,7 +99,6 @@ para decidir a profundidade certa.
 | `mattpocock/skills` | skills (38) | `~/.claude/skills/*` | `/nome` · auto | `npx skills` |
 | `dev-skills` | skills (19) | `~/.claude/skills/*` | `/nome` · auto | `npx skills` |
 | `superpowers` | plugin | `~/.claude/plugins/*` | auto por sessão | plugin marketplace |
-| `claude-mem` | plugin | `~/.claude/plugins/*` + worker `~/.claude-mem/` | auto por sessão · MCP `mcp-search` | plugin marketplace |
 | `spec-kit` | CLI | `~/.local/bin/specify` | `specify <cmd>` | `uv tool` |
 | `skills` (find-skills) | CLI | efêmero (`npx`) | `npx skills <cmd>` | `npx skills` |
 
@@ -358,27 +356,6 @@ uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 
 ---
 
-### `install claude-mem`
-
-Plugin de memória persistente entre sessões (worker local + SQLite + MCP `mcp-search`).
-
-```bash
-claude plugin marketplace add thedotmack/claude-mem
-claude plugin install claude-mem@thedotmack --scope user
-```
-
-**Config** — `~/.claude-mem/settings.json` (flat key/value). Chaves úteis:
-`CLAUDE_MEM_PROVIDER` (default `claude`, usa a assinatura), `CLAUDE_MEM_EXCLUDED_PROJECTS`
-(padrões separados por vírgula — projetos a **não** capturar), telemetria off por
-`telemetry.json`.
-
-> **Privacidade/isolamento** — o worker captura observações de *todas* as tools num SQLite
-> **global**. Em ambientes multi-cliente/confidenciais, exclua o projeto via
-> `CLAUDE_MEM_EXCLUDED_PROJECTS` e mantenha Cloud Sync desligado. **Retorno** — plugin ativo;
-> worker sobe a cada sessão.
-
----
-
 ### `install find-skills`
 
 CLI para descobrir/instalar skills do ecossistema aberto. Não persiste — roda via `npx`.
@@ -468,7 +445,6 @@ specify init <projeto> --integration claude --integration-options="--skills"   #
 |---------|----------|
 | `ls ~/.claude/skills \| wc -l` | `57` (38 + 19) — mais quaisquer skills locais do operador |
 | `claude plugin list \| grep superpowers` | `superpowers@superpowers-marketplace` |
-| `claude plugin list \| grep claude-mem` | `claude-mem@thedotmack` |
 | `specify version` | versão do spec-kit |
 | `npx skills list` | lista as skills instaladas |
 | `jq empty ~/.claude/settings.json && echo ok` | `ok` |
@@ -516,11 +492,9 @@ mattpocock sem duplicar (por isso não trazem `tdd`, `code-review`, `research`,
 |----------|---------|
 | Atualizar skills | `npx skills@latest update --global -y` |
 | Atualizar superpowers | `claude plugin marketplace update superpowers-marketplace` |
-| Atualizar claude-mem | `claude plugin marketplace update thedotmack` |
 | Atualizar spec-kit | `uv tool upgrade specify-cli` |
 | Remover skills | `npx skills@latest remove --global --skill '*' -y` |
 | Remover superpowers | `claude plugin uninstall superpowers@superpowers-marketplace` |
-| Remover claude-mem | `claude plugin uninstall claude-mem@thedotmack` |
 | Remover spec-kit | `uv tool uninstall specify-cli` |
 
 ---

@@ -39,7 +39,6 @@ These were intentionally excluded from vendoring:
 
 - **github/spec-kit** — install natively as the `specify` CLI (spec-driven workflow SSOT).
 - **obra/superpowers** — install natively as a plugin (plan/TDD/review discipline).
-- **thedotmack/claude-mem** — install natively as a plugin (cross-session memory worker + `mcp-search`).
 - **vercel-labs/skills** — the `skills` CLI (`npx skills`), used to discover/install skills; nothing to vendor.
 - **gotalab/cc-sdd** — optional skills-native SDD system via `npx cc-sdd`.
 - **SpillwaveSolutions/sdd-skill**, **ruvnet/agentic-flow** — no upstream license; not redistributable.
