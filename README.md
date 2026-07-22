@@ -605,6 +605,19 @@ ponto rastreia até um destes itens.
 
 ---
 
+## Sobre o André
+
+André Franciny é Gerente de Receitas no Templo. Trabalha com IA e automação para tirar a
+operação de receita do trabalho manual: roteamento de leads, higiene de pipeline, debriefs de
+reunião, follow-up e dashboards executivos. Este stack de skills faz parte do método —
+transformar processo ad-hoc em um fluxo com especificação, design explícito e verificação,
+cada etapa com um artefato que a próxima consome.
+
+- LinkedIn: [andre-franciny-br](https://www.linkedin.com/in/andre-franciny-br/)
+- Instagram: [andre.franciny](https://www.instagram.com/andre.franciny)
+
+---
+
 ## Licença
 
 Curadoria/organização: MIT ([LICENSE](./LICENSE)). Cada skill vendorizada mantém a licença

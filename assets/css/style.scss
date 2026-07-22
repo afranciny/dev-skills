@@ -1,0 +1,105 @@
+---
+# Override do tema jekyll-theme-cayman com o Templo Brand System (Brandbook Abr/2025).
+# Regras de marca respeitadas: sem gradientes, sem preto full-bleed, raio 2px, sombra soft.
+---
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Open+Sans:wght@400;600;700&display=swap');
+@import "{{ site.theme }}";
+
+// ===== Templo Brand System — tokens =====
+$templo-navy:   #27326F; // fundo institucional denso
+$templo-green:  #154F3B;
+$templo-red:    #E81F27; // assinatura / CTA / acento
+$templo-orange: #F05A22;
+$templo-blue:   #1672B9; // complementar, links
+$templo-yellow: #FFD186; // destaque editorial
+$templo-rosa:   #EAB6D4;
+$templo-ink:    #111111; // apenas texto
+$shadow-soft:   0 2px 12px rgba(17, 17, 17, 0.06); // única sombra permitida
+
+$serif: 'DM Serif Display', Georgia, serif; // display (Moret indisponível na web)
+$sans:  'Open Sans', system-ui, -apple-system, sans-serif;
+
+body {
+  font-family: $sans;
+  color: $templo-ink;
+}
+
+// --- Header: cor sólida, SEM gradiente (a marca não usa gradientes) ---
+.page-header {
+  background-color: $templo-navy;
+  background-image: none;
+  color: #fff;
+}
+.project-name {
+  font-family: $serif;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+.project-tagline {
+  font-family: $sans;
+  font-weight: 400;
+  opacity: 0.95;
+}
+
+// Botões do header (View on GitHub etc.) — angular 2px, sem preenchimento chapado
+.btn {
+  border-radius: 2px;
+  border-color: rgba(255, 255, 255, 0.4);
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+// --- Conteúdo ---
+.main-content {
+  h1, h2, h3, h4, h5, h6 {
+    font-family: $serif;
+    font-weight: 400;
+    color: $templo-navy;
+  }
+  h2 {
+    margin-top: 2.4rem;
+    border-bottom: 2px solid $templo-yellow;
+    padding-bottom: 0.2em;
+  }
+  h3 { color: $templo-green; }
+
+  a { color: $templo-blue; }
+  a:hover { color: $templo-red; }
+
+  // código e blocos: raio 2px, sombra soft
+  code {
+    border-radius: 2px;
+    background-color: #f4f3f0;
+    color: $templo-ink;
+  }
+  pre, .highlight {
+    border-radius: 2px;
+    box-shadow: $shadow-soft;
+  }
+  pre { background-color: #1b2140; } // azul bem escuro (não preto full-bleed)
+
+  blockquote {
+    border-left: 3px solid $templo-red;
+    color: #444;
+  }
+
+  table th {
+    background-color: $templo-navy;
+    color: #fff;
+    border-color: $templo-navy;
+  }
+  table tr:nth-child(2n) { background-color: #faf9f6; }
+
+  hr {
+    height: 2px;
+    background-color: $templo-yellow;
+  }
+}
+
+.site-footer {
+  border-top: 1px solid #ececec;
+  color: #6a6a6a;
+}
