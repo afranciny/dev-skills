@@ -405,7 +405,7 @@ Imprime, a cada sessão, um lembrete de usar as skills com o link do guia. Adici
 **Comando completo** (o que gravar em `command`):
 
 ```bash
-echo '{"systemMessage":"Stack de skills ativo: mattpocock + dev-skills + superpowers + claude-mem + spec-kit + npx skills. Guia: https://afranciny.github.io/dev-skills/#guia-de-uso — acione /ask-matt se estiver em dúvida.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"O usuário mantém um set curado de skills de engenharia (mattpocock + ~/dev-skills) + plugins superpowers/claude-mem + CLIs spec-kit/npx skills. Prefira acionar a skill adequada à fase do trabalho (descoberta, spec, design/DDD, UI via /impeccable, implementação, review, entrega, meta via task-observer)."}}'
+echo '{"systemMessage":"Stack de skills ativo: mattpocock + dev-skills + superpowers + spec-kit + npx skills. Guia: https://afranciny.github.io/dev-skills/#guia-de-uso — acione /ask-matt se estiver em dúvida.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"O usuário mantém um set curado de skills de engenharia (mattpocock + ~/dev-skills) + plugin superpowers + CLIs spec-kit/npx skills. Prefira acionar a skill adequada à fase do trabalho (descoberta, spec, design/DDD, UI via /impeccable, implementação, review, entrega, meta via task-observer)."}}'
 ```
 
 > Sem contagem fixa no texto — a lista de skills cresce; nomear os componentes evita drift.
