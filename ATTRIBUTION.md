@@ -25,6 +25,13 @@ No modifications were made to the vendored `SKILL.md` content unless noted.
 | security-hardening | [rohitg00/awesome-claude-code-toolkit](https://github.com/rohitg00/awesome-claude-code-toolkit) | Apache-2.0 | licenses/rohitg00-toolkit.LICENSE |
 | tech-debt-tracker | [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills) | MIT © 2025 Alireza Rezvani | licenses/alirezarezvani-claude-skills.LICENSE |
 | migration-architect | [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills) | MIT © 2025 Alireza Rezvani | licenses/alirezarezvani-claude-skills.LICENSE |
+| impeccable | [pbakaus/impeccable](https://github.com/pbakaus/impeccable) | Apache-2.0 © Paul Bakaus | licenses/pbakaus-impeccable.LICENSE (+ `.NOTICE`) |
+| task-observer | [rebelytics/one-skill-to-rule-them-all](https://github.com/rebelytics/one-skill-to-rule-them-all) | CC-BY-4.0 © Eoghan Henn / rebelytics | licenses/rebelytics-task-observer.LICENSE |
+
+> **impeccable** inclui o `NOTICE` de origem (Apache-2.0 §4d), que credita conteúdo derivado de
+> [ehmo/platform-design-skills](https://github.com/ehmo/platform-design-skills) (MIT) nos arquivos
+> de referência de plataforma (iOS/Android). Ver `licenses/pbakaus-impeccable.NOTICE`.
+> **task-observer** é CC-BY-4.0 — a atribuição a Eoghan Henn / rebelytics acima cumpre a licença.
 
 ## Not vendored (referenced only)
 
@@ -32,6 +39,8 @@ These were intentionally excluded from vendoring:
 
 - **github/spec-kit** — install natively as the `specify` CLI (spec-driven workflow SSOT).
 - **obra/superpowers** — install natively as a plugin (plan/TDD/review discipline).
+- **thedotmack/claude-mem** — install natively as a plugin (cross-session memory worker + `mcp-search`).
+- **vercel-labs/skills** — the `skills` CLI (`npx skills`), used to discover/install skills; nothing to vendor.
 - **gotalab/cc-sdd** — optional skills-native SDD system via `npx cc-sdd`.
 - **SpillwaveSolutions/sdd-skill**, **ruvnet/agentic-flow** — no upstream license; not redistributable.
 - Any skill that duplicates the `mattpocock/skills` set already installed globally

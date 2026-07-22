@@ -11,6 +11,7 @@ exclude:
   - cqrs-implementation
   - domain-driven-design
   - event-store-design
+  - impeccable
   - licenses
   - microservices-patterns
   - migration-architect
@@ -20,5 +21,6 @@ exclude:
   - saga-orchestration
   - security-hardening
   - system-design
+  - task-observer
   - tech-debt-tracker
   - working-with-legacy-code

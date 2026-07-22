@@ -2,11 +2,12 @@
 
 > Set curado de agent skills de engenharia para o Claude Code + referência de setup do stack completo.
 
-`skills: 17` · `stack: 4 componentes` · `scope: global` · `license: MIT`
+`skills: 19` · `stack: 6 componentes` · `scope: global` · `license: MIT`
 
 Referência técnica para instalar e operar o stack de skills: `mattpocock/skills` (base),
-`dev-skills` (este repo), `superpowers` (plugin) e `spec-kit` (CLI). Formato de referência
-— cada operação traz assinatura, parâmetros, retorno e exemplo.
+`dev-skills` (este repo), `superpowers` (plugin), `spec-kit` (CLI), `claude-mem` (plugin de
+memória) e `skills` (CLI de descoberta, `npx skills`). Formato de referência — cada operação
+traz assinatura, parâmetros, retorno e exemplo.
 
 ---
 
@@ -80,6 +81,8 @@ para decidir a profundidade certa.
   - [`install dev-skills`](#install-dev-skills)
   - [`install superpowers`](#install-superpowers)
   - [`install spec-kit`](#install-spec-kit)
+  - [`install claude-mem`](#install-claude-mem)
+  - [`install find-skills`](#install-find-skills)
 - [Configuração: hook SessionStart](#configuração-hook-sessionstart)
 - [Operações por projeto](#operações-por-projeto)
 - [Health checks](#health-checks)
@@ -95,9 +98,11 @@ para decidir a profundidade certa.
 | Componente | Tipo | Artefato instalado | Invocação | Fonte |
 |------------|------|--------------------|-----------|-------|
 | `mattpocock/skills` | skills (38) | `~/.claude/skills/*` | `/nome` · auto | `npx skills` |
-| `dev-skills` | skills (17) | `~/.claude/skills/*` | `/nome` · auto | `npx skills` |
+| `dev-skills` | skills (19) | `~/.claude/skills/*` | `/nome` · auto | `npx skills` |
 | `superpowers` | plugin | `~/.claude/plugins/*` | auto por sessão | plugin marketplace |
+| `claude-mem` | plugin | `~/.claude/plugins/*` + worker `~/.claude-mem/` | auto por sessão · MCP `mcp-search` | plugin marketplace |
 | `spec-kit` | CLI | `~/.local/bin/specify` | `specify <cmd>` | `uv tool` |
+| `skills` (find-skills) | CLI | efêmero (`npx`) | `npx skills <cmd>` | `npx skills` |
 
 **Guia de uso** (qual skill em cada fase): ver [Guia de uso](#guia-de-uso) abaixo.
 
@@ -107,7 +112,7 @@ para decidir a profundidade certa.
 
 Qual skill acionar em cada fase do trabalho. Invoque com `/nome`; muitas disparam sozinhas
 pelo contexto. Origem: `matt` = mattpocock · `dev` = dev-skills · `sup` = superpowers ·
-`spec` = spec-kit.
+`spec` = spec-kit · `cli` = `npx skills` (find-skills).
 
 ### 1. Descoberta & enquadramento
 
@@ -146,6 +151,7 @@ Onde vive a lógica, quais as fronteiras, qual a linguagem do negócio.
 | `/system-design` | dev | Sistema distribuído escalável: LB, cache, filas, particionamento |
 | `/design-an-interface` | matt | Explorar múltiplos formatos de uma interface |
 | `/improve-codebase-architecture` | matt | Auditar a base atual → relatório → grill |
+| `/impeccable` | dev | **UI/frontend**: shape/audit/critique/polish de interface — design system, a11y, anti-genérico |
 
 ### 4. Padrões de backend
 
@@ -204,6 +210,8 @@ Passar bastão, ensinar, triar e criar novas skills.
 | `/triage` · `/request-refactor-plan` | matt | Máquina de estados de triagem; plano de refactor como issue |
 | `/teach` | matt | Ensinar uma nova skill/conceito no workspace |
 | `writing-skills` · `/writing-great-skills` | sup · matt | Criar/editar skills |
+| `task-observer` | dev | Observa a sessão → propõe melhorias/novas skills (revisar antes de aplicar) |
+| `npx skills find` · `add` | cli | Descobrir e instalar skills do ecossistema aberto |
 
 ### 9. Escrita (não-código)
 
@@ -297,7 +305,7 @@ npx skills@latest add mattpocock/skills --global --agent claude-code --skill '*'
 
 ### `install dev-skills`
 
-Este repo — 17 skills net-new (DDD, arquitetura, backend, entrega) que complementam a base.
+Este repo — 19 skills net-new (DDD, arquitetura, backend, entrega, UI e meta) que complementam a base.
 
 ```bash
 npx skills@latest add afranciny/dev-skills --global --agent claude-code --skill '*' -y
@@ -312,7 +320,7 @@ for d in ~/dev-skills/*/; do
 done
 ```
 
-**Retorno** — 17 diretórios de skill disponíveis em `~/.claude/skills/`.
+**Retorno** — 19 diretórios de skill disponíveis em `~/.claude/skills/`.
 
 ---
 
@@ -347,6 +355,41 @@ uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 ```
 
 **Retorno** — executável `~/.local/bin/specify` (garanta `~/.local/bin` no `PATH`).
+
+---
+
+### `install claude-mem`
+
+Plugin de memória persistente entre sessões (worker local + SQLite + MCP `mcp-search`).
+
+```bash
+claude plugin marketplace add thedotmack/claude-mem
+claude plugin install claude-mem@thedotmack --scope user
+```
+
+**Config** — `~/.claude-mem/settings.json` (flat key/value). Chaves úteis:
+`CLAUDE_MEM_PROVIDER` (default `claude`, usa a assinatura), `CLAUDE_MEM_EXCLUDED_PROJECTS`
+(padrões separados por vírgula — projetos a **não** capturar), telemetria off por
+`telemetry.json`.
+
+> **Privacidade/isolamento** — o worker captura observações de *todas* as tools num SQLite
+> **global**. Em ambientes multi-cliente/confidenciais, exclua o projeto via
+> `CLAUDE_MEM_EXCLUDED_PROJECTS` e mantenha Cloud Sync desligado. **Retorno** — plugin ativo;
+> worker sobe a cada sessão.
+
+---
+
+### `install find-skills`
+
+CLI para descobrir/instalar skills do ecossistema aberto. Não persiste — roda via `npx`.
+
+```bash
+npx skills find <termo>        # busca skills por palavra-chave
+npx skills add <owner/repo> --global --agent claude-code   # instala
+npx skills list                # lista instaladas
+```
+
+**Retorno** — nenhum artefato instalado do próprio CLI; ele instala/gerencia *outras* skills.
 
 ---
 
@@ -385,8 +428,10 @@ Imprime, a cada sessão, um lembrete de usar as skills com o link do guia. Adici
 **Comando completo** (o que gravar em `command`):
 
 ```bash
-echo '{"systemMessage":"Você tem 55 skills + superpowers + spec-kit. Guia: https://afranciny.github.io/dev-skills/#guia-de-uso — acione /ask-matt se estiver em dúvida.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"O usuário mantém um set curado de skills de engenharia. Prefira acionar a skill adequada à fase do trabalho."}}'
+echo '{"systemMessage":"Stack de skills ativo: mattpocock + dev-skills + superpowers + claude-mem + spec-kit + npx skills. Guia: https://afranciny.github.io/dev-skills/#guia-de-uso — acione /ask-matt se estiver em dúvida.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"O usuário mantém um set curado de skills de engenharia (mattpocock + ~/dev-skills) + plugins superpowers/claude-mem + CLIs spec-kit/npx skills. Prefira acionar a skill adequada à fase do trabalho (descoberta, spec, design/DDD, UI via /impeccable, implementação, review, entrega, meta via task-observer)."}}'
 ```
+
+> Sem contagem fixa no texto — a lista de skills cresce; nomear os componentes evita drift.
 
 **Validação** — `jq empty ~/.claude/settings.json` (sem saída = ok). Efetivo na próxima
 sessão; se não disparar, abra `/hooks` uma vez para recarregar a config.
@@ -421,9 +466,11 @@ specify init <projeto> --integration claude --integration-options="--skills"   #
 
 | Comando | Esperado |
 |---------|----------|
-| `ls ~/.claude/skills \| wc -l` | `55` (38 + 17) |
+| `ls ~/.claude/skills \| wc -l` | `57` (38 + 19) — mais quaisquer skills locais do operador |
 | `claude plugin list \| grep superpowers` | `superpowers@superpowers-marketplace` |
+| `claude plugin list \| grep claude-mem` | `claude-mem@thedotmack` |
 | `specify version` | versão do spec-kit |
+| `npx skills list` | lista as skills instaladas |
 | `jq empty ~/.claude/settings.json && echo ok` | `ok` |
 
 Em nova sessão: skills disponíveis via `/` (ex.: `/domain-driven-design`, `/cqrs-implementation`)
@@ -433,7 +480,7 @@ e a mensagem do hook exibida.
 
 ## Resources: catálogo de skills
 
-Skills deste repo (17). Nomes = comando de invocação (`/nome`).
+Skills deste repo (19). Nomes = comando de invocação (`/nome`).
 
 | Skill | Grupo | Trigger |
 |-------|-------|---------|
@@ -454,6 +501,8 @@ Skills deste repo (17). Nomes = comando de invocação (`/nome`).
 | `release-it` | entrega | Circuit breakers, bulkheads, timeouts, chaos, observabilidade |
 | `tech-debt-tracker` | entrega | Identificar, priorizar e rastrear dívida técnica |
 | `migration-architect` | entrega | Migração de risco com rollback explícito (zero-downtime) |
+| `impeccable` | frontend | UI/frontend: shape/audit/critique/polish; design system, a11y, anti-genérico |
+| `task-observer` | meta | Observa sessões → propõe melhorias/novas skills (revisar antes de aplicar) |
 
 Fontes e licenças por skill: [ATTRIBUTION.md](./ATTRIBUTION.md). Complementam a base do
 mattpocock sem duplicar (por isso não trazem `tdd`, `code-review`, `research`,
@@ -467,9 +516,11 @@ mattpocock sem duplicar (por isso não trazem `tdd`, `code-review`, `research`,
 |----------|---------|
 | Atualizar skills | `npx skills@latest update --global -y` |
 | Atualizar superpowers | `claude plugin marketplace update superpowers-marketplace` |
+| Atualizar claude-mem | `claude plugin marketplace update thedotmack` |
 | Atualizar spec-kit | `uv tool upgrade specify-cli` |
 | Remover skills | `npx skills@latest remove --global --skill '*' -y` |
 | Remover superpowers | `claude plugin uninstall superpowers@superpowers-marketplace` |
+| Remover claude-mem | `claude plugin uninstall claude-mem@thedotmack` |
 | Remover spec-kit | `uv tool uninstall specify-cli` |
 
 ---
